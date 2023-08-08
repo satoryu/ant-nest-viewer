@@ -19,7 +19,7 @@ jobs:
         run: npm run build
         env:
           BASE: /ant-nest-viewer/
-      - uses: action/upload-pages-artifact@v2
+      - uses: actions/upload-pages-artifact@v2
         with:
           path: dist/
   deploy:
@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Deploy
-        uses: action/deploy-pages@v2
+        uses: actions/deploy-pages@v2
         id: deployment
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
