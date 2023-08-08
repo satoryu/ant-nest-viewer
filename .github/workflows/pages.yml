@@ -1,0 +1,42 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    ## Build and deploy vite project to github pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+        env:
+          BASE: /ant-nest-viewer/
+      - uses: action/upload-pages-action@v2
+        with:
+          path: dist/
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.url }}
+
+    steps:
+      - name: Deploy
+        uses: action/deploy-pages@v2
+        id: deployment
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
