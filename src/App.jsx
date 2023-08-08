@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useRef, useState } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { PerspectiveCamera, OrbitControls } from '@react-three/drei'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+function Box(props) {
+  const meshRef = useRef()
+  const [hovered, setHover] = useState(false)
+  const [active, setActive] = useState(false)
+
+  useFrame((state, delta) => (meshRef.current.rotation.x += delta))
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <mesh
+      {...props}
+      ref={meshRef}
+      scale={active ? 1.5 : 1}
+      onClick={(_event) => setActive(!active)}
+      onPointerOver={(_event) => setHover(true)}
+      onPointerOut={(_event) => setHover(false)}
+    >
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color={hovered ? 'pink' : 'orange'} />
+    </mesh>
   )
 }
+
+function App() {
+  let boxes = []
+
+  for (let x = 0; x < 10; x++) {
+    for (let y = 0; y < 10; y++) {
+      boxes.push(<Box position={[x * 1.5, y * 1.5, 0]} />)
+    }
+  }
+
+  return (
+    <Canvas style={{ width: '100vw', height: '100vh' }}>
+      <PerspectiveCamera makeDefault position={[5, 5, 10]} />
+      <OrbitControls />
+      <ambientLight />
+      <pointLight position={[10, 10, 10]} />
+      <>
+      {boxes}
+      </>
+    </Canvas>
+  )
+}
+
+
 
 export default App
