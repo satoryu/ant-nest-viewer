@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei'
 import './App.css'
+import { XR, XRButton } from '@react-three/xr'
 
 function Box(props) {
   const meshRef = useRef()
@@ -35,15 +36,20 @@ function App() {
   }
 
   return (
-    <Canvas style={{ width: '100vw', height: '100vh' }}>
-      <PerspectiveCamera makeDefault position={[5, 5, 10]} />
-      <OrbitControls />
-      <ambientLight />
-      <pointLight position={[10, 10, 10]} />
-      <>
-      {boxes}
-      </>
-    </Canvas>
+    <>
+      <XRButton mode='VR'/>
+      <Canvas style={{ width: '100vw', height: '100vh' }}>
+        <XR>
+          <PerspectiveCamera makeDefault position={[5, 5, 10]} />
+          <OrbitControls />
+          <ambientLight />
+          <pointLight position={[10, 10, 10]} />
+          <>
+          {boxes}
+          </>
+        </XR>
+      </Canvas>
+    </>
   )
 }
 
