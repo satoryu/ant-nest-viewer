@@ -1,58 +1,55 @@
-import { useRef, useState } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useLoader } from '@react-three/fiber'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei'
 import './App.css'
 import { XR, XRButton } from '@react-three/xr'
+import { useState } from 'react'
 
-function Box(props) {
-  const meshRef = useRef()
-  const [hovered, setHover] = useState(false)
-  const [active, setActive] = useState(false)
-
-  useFrame((state, delta) => (meshRef.current.rotation.x += delta))
+function AntNest(props) {
+  const obj = useLoader(OBJLoader, props.objUrl)
 
   return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={active ? 1.5 : 1}
-      onClick={(_event) => setActive(!active)}
-      onPointerOver={(_event) => setHover(true)}
-      onPointerOut={(_event) => setHover(false)}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'pink' : 'orange'} />
+    <mesh {...props}>
+      <primitive object={obj} />
     </mesh>
   )
 }
 
-function App() {
-  let boxes = []
-
-  for (let x = 0; x < 10; x++) {
-    for (let y = 0; y < 10; y++) {
-      boxes.push(<Box position={[x * 1.5, y * 1.5, 0]} />)
-    }
-  }
+function Selector(props) {
+  const objects = ['/58.obj', '/64_new.obj', '/82.obj', '/84.obj', '/146_new.obj', '/146_old.obj', '/155.obj', '/178.obj', '/220_moved.obj', '/223_new.obj', '/223_old.obj', '/285_new.obj', '/285_old.obj', '/290_new.obj', '/290_old.obj']
+  const options = objects.map((obj) => <option key={obj} value={obj}>{obj}</option>)
+  const onSelected = props.onSelected || (() => {})
 
   return (
-    <>
-      <XRButton mode='VR'/>
-      <Canvas style={{ width: '100vw', height: '100vh' }}>
-        <XR>
-          <PerspectiveCamera makeDefault position={[5, 5, 10]} />
-          <OrbitControls />
-          <ambientLight />
-          <pointLight position={[10, 10, 10]} />
-          <>
-          {boxes}
-          </>
-        </XR>
-      </Canvas>
-    </>
+    <label>
+      Choose an Ant Nest:
+      <select
+        onChange={(event) => { onSelected(event.target.value)} }
+      >
+        {options}
+      </select>
+    </label>
   )
 }
 
+function App() {
+  const [objUrl, setObjUrl] = useState('/58.obj')
 
+  return (
+    <>
+      <Selector onSelected={ (newObjUrl) => {setObjUrl(newObjUrl)}} />
+      <Canvas style={{ width: '100vw', height: '100vh' }}>
+        <XR>
+          <PerspectiveCamera makeDefault position={[0, 0, 1]} />
+          <OrbitControls />
+          <ambientLight intensity={0.5} />
+          <pointLight position={[2, 2, 2]} power={100} />
+          <AntNest objUrl={objUrl} />
+        </XR>
+      </Canvas>
+      <XRButton mode='VR' />
+    </>
+  )
+}
 
 export default App
