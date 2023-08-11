@@ -16,7 +16,7 @@ function AntNest(props) {
 }
 
 function Selector(props) {
-  const objects = ['/58.obj', '/64_new.obj', '/82.obj', '/84.obj', '/146_new.obj', '/146_old.obj', '/155.obj', '/178.obj', '/220_moved.obj', '/223_new.obj', '/223_old.obj', '/285_new.obj', '/285_old.obj', '/290_new.obj', '/290_old.obj']
+  const objects = ['58.obj', '64_new.obj', '82.obj', '84.obj', '146_new.obj', '146_old.obj', '155.obj', '178.obj', '220_moved.obj', '223_new.obj', '223_old.obj', '285_new.obj', '285_old.obj', '290_new.obj', '290_old.obj']
   const options = objects.map((obj) => <option key={obj} value={obj}>{obj}</option>)
   const onSelected = props.onSelected || (() => {})
 
@@ -33,11 +33,12 @@ function Selector(props) {
 }
 
 function App() {
-  const [objUrl, setObjUrl] = useState('/58.obj')
+  const [objUrl, setObjUrl] = useState('58.obj')
 
   return (
     <>
       <Selector onSelected={ (newObjUrl) => {setObjUrl(newObjUrl)}} />
+      <XRButton mode='VR' />
       <Canvas style={{ width: '100vw', height: '100vh' }}>
         <XR>
           <PerspectiveCamera makeDefault position={[0, 0, 1]} />
@@ -47,7 +48,6 @@ function App() {
           <AntNest objUrl={objUrl} />
         </XR>
       </Canvas>
-      <XRButton mode='VR' />
     </>
   )
 }
