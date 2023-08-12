@@ -1,9 +1,9 @@
 import { Canvas, useLoader } from '@react-three/fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
-import { PerspectiveCamera, OrbitControls } from '@react-three/drei'
+import { PerspectiveCamera, OrbitControls, useProgress, Html } from '@react-three/drei'
 import './App.css'
 import { XR, XRButton } from '@react-three/xr'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
 function AntNest(props) {
   const obj = useLoader(OBJLoader, props.objUrl)
@@ -32,6 +32,16 @@ function Selector(props) {
   )
 }
 
+function Loader() {
+  const { active, progress, errors, item, loaded, total } = useProgress()
+
+  return (
+    <Html center>
+      {progress} % loaded
+    </Html>
+  )
+}
+
 function App() {
   const [objUrl, setObjUrl] = useState('58.obj')
 
@@ -45,7 +55,10 @@ function App() {
           <OrbitControls />
           <ambientLight intensity={0.5} />
           <pointLight position={[2, 2, 2]} power={100} />
-          <AntNest objUrl={objUrl} />
+
+          <Suspense fallback={<Loader />}>
+            <AntNest objUrl={objUrl} />
+          </Suspense>
         </XR>
       </Canvas>
     </>
