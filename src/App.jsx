@@ -1,6 +1,6 @@
 import { Canvas, useLoader } from '@react-three/fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
-import { PerspectiveCamera, OrbitControls, useProgress, Html } from '@react-three/drei'
+import { PerspectiveCamera, OrbitControls, Loader } from '@react-three/drei'
 import './App.css'
 import { XR, XRButton } from '@react-three/xr'
 import { Suspense, useState } from 'react'
@@ -32,16 +32,6 @@ function Selector(props) {
   )
 }
 
-function Loader() {
-  const { active, progress, errors, item, loaded, total } = useProgress()
-
-  return (
-    <Html center>
-      {progress} % loaded
-    </Html>
-  )
-}
-
 function App() {
   const [objUrl, setObjUrl] = useState('58.obj')
 
@@ -56,11 +46,12 @@ function App() {
           <ambientLight intensity={0.5} />
           <pointLight position={[2, 2, 2]} power={100} />
 
-          <Suspense fallback={<Loader />}>
+          <Suspense fallback={null} >
             <AntNest objUrl={objUrl} />
           </Suspense>
         </XR>
       </Canvas>
+      <Loader />
     </>
   )
 }
