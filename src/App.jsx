@@ -2,7 +2,7 @@ import { Canvas, useLoader } from '@react-three/fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { PerspectiveCamera, OrbitControls, Loader } from '@react-three/drei'
 import './App.css'
-import { XR, XRButton } from '@react-three/xr'
+import { Controllers, Hands, Interactive, XR, XRButton } from '@react-three/xr'
 import { Suspense, useState } from 'react'
 
 function AntNest(props) {
@@ -45,6 +45,9 @@ function App() {
           <OrbitControls />
           <ambientLight intensity={0.5} />
           <pointLight position={[2, 2, 2]} power={100} />
+
+          <Controllers rayMaterial={{ color: 'blue' }}/>
+          <Hands />
 
           <Suspense fallback={null} >
             <AntNest objUrl={objUrl} />
